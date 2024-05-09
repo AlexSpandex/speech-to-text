@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import './SpeechDisplay.css';
 
-const socket = io('http://localhost:3000'); // Adjust URL/port as needed
+const socket = io('http://localhost:3000');
 
 function SpeechDisplay() {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         socket.on('speech', data => {
-            setMessages(messages => [...messages, {text: data.text, color: data.color}]);
+            addMessageWithTypingEffect(data.text, data.color);
         });
 
         socket.on('error', error => {
@@ -21,10 +22,35 @@ function SpeechDisplay() {
         };
     }, []);
 
+    const addMessageWithTypingEffect = (text, color) => {
+        const sentimentClass = color === 'green' ? 'positive'
+            : color === 'yellow' ? 'neutral'
+            : 'negative';
+        
+        let typedText = '';
+        let index = 0;
+        const typingSpeed = 50; // milliseconds
+
+        const intervalId = setInterval(() => {
+            if (index < text.length) {
+                typedText += text.charAt(index);
+                setMessages(messages => [...messages.slice(0, -1), { text: typedText, class: `${sentimentClass} typing` }]);
+                index++;
+            } else {
+                clearInterval(intervalId);
+                // Remove typing class once complete
+                setMessages(messages => [...messages.slice(0, -1), { text: typedText, class: sentimentClass }]);
+            }
+        }, typingSpeed);
+
+        // Add initial empty message with typing class
+        setMessages(messages => [...messages, { text: '', class: `${sentimentClass} typing` }]);
+    };
+
     return (
-        <div>
+        <div className="messages-container">
             {messages.map((msg, index) => (
-                <p key={index} style={{ color: msg.color }}>
+                <p key={index} className={msg.class}>
                     {msg.text}
                 </p>
             ))}

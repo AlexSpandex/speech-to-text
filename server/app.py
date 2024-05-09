@@ -2,10 +2,20 @@ from flask import Flask
 from flask_socketio import SocketIO
 import speech_recognition as sr
 from flask_cors import CORS
+from textblob import TextBlob
 
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+def analyze_sentiment(text):
+    analysis = TextBlob(text)
+    if analysis.sentiment.polarity > 0:
+        return 'green'  # Positive sentiment
+    elif analysis.sentiment.polarity == 0:
+        return 'yellow'  # Neutral sentiment
+    else:
+        return 'red'  # Negative sentiment
 
 @app.route('/')
 def index():
@@ -20,7 +30,8 @@ def recognize_speech_from_mic():
             audio = recognizer.listen(source)
             try:
                 text = recognizer.recognize_google(audio)
-                socketio.emit('speech', {'text': text, 'color': 'random_color_function()'})
+                color = analyze_sentiment(text)  # Analyze sentiment and get color
+                socketio.emit('speech', {'text': text, 'color': color})
             except sr.UnknownValueError:
                 socketio.emit('error', {'message': 'Unintelligible speech.'})
             except sr.RequestError:
