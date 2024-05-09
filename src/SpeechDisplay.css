@@ -10,7 +10,7 @@
     padding: 20px;
     border: 1px solid #333;
     height: 400px; /* Fixed height to control the size */
-    width: 800px; /* Fixed height to control the size */
+    width: 800px; /* Fixed width to control the size */
 }
 
 /* Individual message styling */

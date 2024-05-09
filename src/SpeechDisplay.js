@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import './SpeechDisplay.css';
 
-const socket = io('http://localhost:3000');  // Ensure this matches your server's address
+const socket = io('http://localhost:3000');  
 
 function SpeechDisplay() {
     const [messages, setMessages] = useState([]);
