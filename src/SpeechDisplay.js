@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import './SpeechDisplay.css';
 
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:3000');  // Ensure this matches your server's address
 
 function SpeechDisplay() {
     const [messages, setMessages] = useState([]);
+    const [micStatus, setMicStatus] = useState('Checking microphone...');
 
     useEffect(() => {
         socket.on('speech', data => {
             addMessageWithTypingEffect(data.text, data.color);
+        });
+
+        socket.on('mic_status', data => {
+            setMicStatus(data.status);
         });
 
         socket.on('error', error => {
@@ -18,6 +23,7 @@ function SpeechDisplay() {
 
         return () => {
             socket.off('speech');
+            socket.off('mic_status');
             socket.off('error');
         };
     }, []);
@@ -54,6 +60,7 @@ function SpeechDisplay() {
                     {msg.text}
                 </p>
             ))}
+            <p className="mic-status">{micStatus}</p>
         </div>
     );
 }
