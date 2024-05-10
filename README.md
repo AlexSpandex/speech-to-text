@@ -1,4 +1,4 @@
-# Real-Time Speech-to-Text Conversion with Sentiment Analysis
+# Stop & Talk
 
 This project is a React application that captures audio input from a microphone, converts speech to text in real-time, analyzes the sentiment of the spoken words, and displays the text and sentiment analysis results dynamically on a webpage.
 
@@ -28,3 +28,18 @@ To install the necessary packages, run the following command in the project dire
 
 ```bash
 npm install
+```
+### Running the Application
+To start the application on your local machine, run:
+
+```bash
+npm start
+```
+
+This command will start the React application and open it in your default web browser. The application will be available at http://localhost:3000.
+
+To start the server on your local machine, add another terminal tab and go to the server folder, run:
+
+```bash
+python app.py
+```
